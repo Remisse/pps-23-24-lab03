@@ -137,24 +137,16 @@ object Exercise {
       // Task 03
       def takeWhile[A](s: Stream[A])(pred: A => Boolean): Stream[A] = s match
         case Cons(h, t) if pred(h()) => cons(h(), takeWhile(t())(pred))
-        case _ => Empty()
+        case _ => empty()
 
       def fill[A](n: Int)(k: A): Stream[A] = n match
-        case a if a <= 0 => Empty()
+        case a if a <= 0 => empty()
         case _ => cons(k, fill(n - 1)(k))
 
       def pell(): Stream[Int] =
-        var n2 = 0
+        def _pell(n1: Int, n2: Int): Stream[Int] =
+          lazy val tail = () => _pell(2 * n1 + n2, n1)
+          Cons(() => n1, tail)
 
-        def _pell(head: Int): Stream[Int] =
-          lazy val tail = () => _pell(head match
-            case 0 => 1
-            case n1 =>
-              val next = 2 * n1 + n2
-              n2 = n1
-              next
-          )
-          Cons(() => head, tail)
-
-        _pell(0)
+        _pell(0, 1)
 }
